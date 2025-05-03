@@ -1,5 +1,9 @@
 use dioxus::prelude::*;
 
+#[derive(serde::Deserialize)]
+pub struct DogApi {
+    pub message: String,
+}
 
 // The database is only available to server code
 #[cfg(feature = "server")]
