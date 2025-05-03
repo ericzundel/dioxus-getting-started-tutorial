@@ -1,3 +1,7 @@
+mod components;
+mod backend;
+
+use crate::components::*;
 use dioxus::prelude::*;
 
 static CSS: Asset = asset!("/assets/main.css");
@@ -7,6 +11,14 @@ struct DogApi {
     message: String,
 }
 
+#[derive(Routable, Clone, PartialEq)]
+enum Route {
+    #[route("/")]
+    DogView,
+    // We can collect the segments of the URL into a Vec<String>
+    #[route("/:..segments")]
+    PageNotFound { segments: Vec<String> },
+}
 
 // The database is only available to server code
 #[cfg(feature = "server")]
@@ -40,6 +52,7 @@ async fn save_dog(image: String) -> Result<(), ServerFnError> {
     Ok(())
 }
 
+/* 
 #[component]
 fn App() -> Element {
     // asset!("/assets/icon.png", ImageAssetOptions::new().with_avif());
@@ -48,6 +61,16 @@ fn App() -> Element {
         document::Stylesheet {href: CSS}
         Title {}
         DogView {}
+    }
+}
+*/
+
+fn App() -> Element {
+    rsx! {
+        document::Stylesheet { href: asset!("/assets/main.css") }
+
+        // 📣 delete Title and DogView and replace it with the Router component.
+        Router::<Route> {}
     }
 }
 
@@ -87,4 +110,12 @@ fn DogView() -> Element {
             }, id: "save", "save!" }
         }
     }
+}
+
+#[component]
+fn PageNotFound(segments: Vec<String>) -> Element {
+    let url = segments.join("/");
+   rsx! {
+    div { "Unknown page {url}"}
+   }
 }
