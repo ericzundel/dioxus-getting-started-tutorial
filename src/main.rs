@@ -13,6 +13,7 @@ struct DogApi {
 
 #[derive(Routable, Clone, PartialEq)]
 enum Route {
+    #[layout(NavBar)] 
     #[route("/")]
     DogView,
     // We can collect the segments of the URL into a Vec<String>
@@ -52,18 +53,6 @@ async fn save_dog(image: String) -> Result<(), ServerFnError> {
     Ok(())
 }
 
-/* 
-#[component]
-fn App() -> Element {
-    // asset!("/assets/icon.png", ImageAssetOptions::new().with_avif());
-
-    rsx! {    
-        document::Stylesheet {href: CSS}
-        Title {}
-        DogView {}
-    }
-}
-*/
 
 fn App() -> Element {
     rsx! {
