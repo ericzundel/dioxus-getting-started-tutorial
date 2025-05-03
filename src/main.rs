@@ -16,29 +16,13 @@ enum Route {
     #[layout(NavBar)] 
     #[route("/")]
     DogView,
+
+    #[route("/favorites")]
+    Favorites,
+
     // We can collect the segments of the URL into a Vec<String>
     #[route("/:..segments")]
     PageNotFound { segments: Vec<String> },
-}
-
-// The database is only available to server code
-#[cfg(feature = "server")]
-thread_local! {
-    pub static DB: rusqlite::Connection = {
-        // Open the database from the persisted "hotdog.db" file
-        let conn = rusqlite::Connection::open("hotdog.db").expect("Failed to open database");
-
-        // Create the "dogs" table if it doesn't already exist
-        conn.execute_batch(
-            "CREATE TABLE IF NOT EXISTS dogs (
-                id INTEGER PRIMARY KEY,
-                url TEXT NOT NULL
-            );",
-        ).unwrap();
-
-        // Return the connection
-        conn
-    };
 }
 
 
@@ -46,12 +30,7 @@ fn main() {
     dioxus::launch(App);
 }
 
-// Expose a `save_dog` endpoint on our server that takes an "image" parameter
-#[server]
-async fn save_dog(image: String) -> Result<(), ServerFnError> {
-    DB.with(|f| f.execute("INSERT INTO dogs (url) VALUES (?1)", &[&image]))?;
-    Ok(())
-}
+
 
 
 fn App() -> Element {
@@ -62,7 +41,6 @@ fn App() -> Element {
         Router::<Route> {}
     }
 }
-
 
 #[component]
 fn Title() -> Element {
@@ -95,7 +73,7 @@ fn DogView() -> Element {
             button { onclick: move |_| async move {
                 let current = img_src.cloned().unwrap();
                 img_src.restart();
-                _ = save_dog(current).await;
+                _ = backend::save_dog(current).await;
             }, id: "save", "save!" }
         }
     }
