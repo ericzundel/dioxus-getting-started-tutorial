@@ -1,25 +1,11 @@
-# Development
+# Getting Started Demo from Dioxus
 
-Your new bare-bones project includes minimal organization with a single `main.rs` file and a few assets.
+This is me learning how to use Dioxus. See the [Dioxus Getting Started](https://dioxuslabs.com/learn/0.6/getting_started/#) 
 
-```
-project/
-├─ assets/ # Any assets that are used by the app should be placed here
-├─ src/
-│  ├─ main.rs # main.rs is the entry point to your application and currently contains all components for the app
-├─ Cargo.toml # The Cargo.toml file defines the dependencies and feature flags for your project
-```
-
-### Serving Your App
-
-Run the following command in the root of your project to start developing with the default platform:
+## How to run the demo
+Serve it up for web development with 
 
 ```bash
-dx serve
-```
-
-To run for a different platform, use the `--platform platform` flag. E.g.
-```bash
-dx serve --platform desktop
+dx serve --platform=web
 ```
 
