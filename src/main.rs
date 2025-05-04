@@ -6,8 +6,6 @@ use dioxus::prelude::*;
 
 static CSS: Asset = asset!("/assets/main.css");
 
-
-
 #[derive(Routable, Clone, PartialEq)]
 enum Route {
     #[layout(NavBar)] 
@@ -22,13 +20,9 @@ enum Route {
     PageNotFound { segments: Vec<String> },
 }
 
-
 fn main() {
     dioxus::launch(App);
 }
-
-
-
 
 fn App() -> Element {
     rsx! {

@@ -45,5 +45,12 @@ pub async fn list_dogs() -> Result<Vec<(usize, String)>, ServerFnError> {
     });
 
     Ok(dogs)
+}
 
+#[server]
+pub async fn remove_dog(image: String) -> Result<(), ServerFnError> {
+    println!("Removing {image}");
+    DB.with(|f| 
+        f.execute("DELETE FROM dogs WHERE url = (?1)", (&image,)))?;
+    Ok(())
 }
