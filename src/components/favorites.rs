@@ -2,16 +2,21 @@ use crate::backend::remove_dog;
 use dioxus::logger::tracing::{event, Level};
 use dioxus::prelude::*;
 
-pub async fn list_dogs_component(count: &Signal<i32>) -> Result<Vec<(usize, String)>, ServerFnError> {
-    let _= *count + 1;
-    crate::backend::list_dogs().await
-}
-
 #[component]
 pub fn Favorites() -> Element {
+    /* Signal used to refresh the component.  
+       It would be nice if the data in the signal was useful, but right now it's just a trigger.
+    */
+    let mut update_signal = use_signal(|| 0);
+
     // Create a pending resource that resolves to the list of dogs from the backend
     // Wait for the favorites list to resolve with `.suspend()`
-    let mut favorites = use_resource(crate::backend::list_dogs).suspend()?;
+    let mut favorites = use_resource(move || async move {
+        // Read the signal so that the resource will be re-run when the signal is modified
+        let _ = update_signal();
+        crate::backend::list_dogs().await
+    })
+    .suspend()?;
 
     rsx! {
         div { id: "favorites",
@@ -25,24 +30,20 @@ pub fn Favorites() -> Element {
                             img { src: "{url}" }
                         }
                         button {
-                            // TODO: Add onclick handler
                             onclick: {
                                 move |_| {
-                                let value = url.clone();
-                                async move {
-                                    match remove_dog(value.clone()).await {
-                                        Err(error) => event!(Level::ERROR, "Couldn't remove {value}: {error}"),
-                                        Ok(_) => {
-                                            /* How do I  remove from favorites ??? 
-                                            This doesn't work: favorites().unwrap().retain( |x| x.1 != value)
-                                            Somehow, we need to introduce a signal into the use_resource() above and
-                                            then update the signal so the use_resource block will re-run
-                                            */
-                                            event!(Level::INFO, "Figure out how to update favorites");
-                                        },
+                                    let value = url.clone();
+                                    async move {
+                                        match remove_dog(value.clone()).await {
+                                            Err(error) => event!(Level::ERROR, "Couldn't remove {value}: {error}"),
+                                            Ok(_) => {
+                                                // Trigger a refresh
+                                                update_signal += 1;
+                                                event!(Level::INFO, "Figure out how to update favorites");
+                                            },
+                                        }
                                     }
                                 }
-                            }
                             },
                             id: "button-{id}",
                             "Remove"
