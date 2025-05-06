@@ -1,4 +1,3 @@
-use crate::Route;
 use crate::backend::{DogApi, save_dog};
 use dioxus::prelude::*;
 

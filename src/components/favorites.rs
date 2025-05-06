@@ -11,7 +11,7 @@ pub fn Favorites() -> Element {
 
     // Create a pending resource that resolves to the list of dogs from the backend
     // Wait for the favorites list to resolve with `.suspend()`
-    let mut favorites = use_resource(move || async move {
+    let favorites = use_resource(move || async move {
         // Read the signal so that the resource will be re-run when the signal is modified
         let _ = update_signal();
         crate::backend::list_dogs().await
@@ -46,7 +46,7 @@ pub fn Favorites() -> Element {
                                 }
                             },
                             id: "button-{id}",
-                            "Remove"
+                            "Bad Dog!"
                         }
                     }
                 }

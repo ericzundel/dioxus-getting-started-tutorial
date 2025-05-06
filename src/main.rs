@@ -1,14 +1,12 @@
-mod components;
 mod backend;
+mod components;
 
 use crate::components::*;
 use dioxus::prelude::*;
 
-static CSS: Asset = asset!("/assets/main.css");
-
 #[derive(Routable, Clone, PartialEq)]
 enum Route {
-    #[layout(NavBar)] 
+    #[layout(NavBar)]
     #[route("/")]
     DogView,
 
@@ -21,10 +19,10 @@ enum Route {
 }
 
 fn main() {
-    dioxus::launch(App);
+    dioxus::launch(app);
 }
 
-fn App() -> Element {
+fn app() -> Element {
     rsx! {
         document::Stylesheet { href: asset!("/assets/main.css") }
 
@@ -45,7 +43,7 @@ fn Title() -> Element {
 #[component]
 fn PageNotFound(segments: Vec<String>) -> Element {
     let url = segments.join("/");
-   rsx! {
-    div { "Unknown page {url}"}
-   }
+    rsx! {
+     div { "Unknown page {url}"}
+    }
 }
