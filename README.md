@@ -1,5 +1,7 @@
 # Getting Started Demo from Dioxus
 
+A.K.A. hot_dog
+
 This is me learning how to use Dioxus. See the [Dioxus Getting Started](https://dioxuslabs.com/learn/0.6/getting_started/#) 
 
 ## How to run the demo
